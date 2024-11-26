@@ -19,8 +19,10 @@ public class Java_compute_node_JavaCompute extends MbJavaComputeNode  {
 		MbMessageAssembly outAssembly = null;
 		try {
 			// create new message as a copy of the input
+			
 			MbMessage outMessage = new MbMessage(inMessage);
 			outAssembly = new MbMessageAssembly(inAssembly, outMessage);
+			
 			// ----------------------------------------------------------
 			// Add user code below
 			MbElement  inputroot = inAssembly.getMessage().getRootElement();
@@ -38,6 +40,7 @@ public class Java_compute_node_JavaCompute extends MbJavaComputeNode  {
 			
 			JsonData.createElementAsLastChild(MbElement.TYPE_NAME_VALUE,"id",id.getValue());
 			JsonData.createElementAsLastChild(MbElement.TYPE_NAME_VALUE,"name",name.getValue());
+	
 			//resp.createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "id", id.getValue());
 	        //resp.createElementAsLastChild(MbElement.TYPE_NAME_VALUE, "name", name.getValue());
 			//System.out.println(outputroot.getName());
