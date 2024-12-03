@@ -1,0 +1,50 @@
+CREATE COMPUTE MODULE VALIDATION_Compute1
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+	
+		-- CALL CopyMessageHeaders();
+		CALL CopyEntireMessage();
+		
+		RETURN TRUE;
+	END;
+
+	CREATE PROCEDURE CopyMessageHeaders() BEGIN
+		DECLARE I INTEGER 1;
+		DECLARE J INTEGER;
+		SET J = CARDINALITY(InputRoot.*[]);
+		WHILE I < J DO
+			SET OutputRoot.*[I] = InputRoot.*[I];
+			SET I = I + 1;
+		END WHILE;
+	END;
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		DECLARE channelid CHARACTER fieldname(InputRoot.XMLNSC.Root.Header.channelId);
+		
+		DECLARE EName CHARACTER fieldname(InputRoot.XMLNSC.Root.Body.Data.[1]);
+		DECLARE bookReF REFERENCE TO InputRoot.XMLNSC.Root.Body.Data.{EName}.book[1];
+		
+		DECLARE i INTEGER 1;
+		
+		WHILE LASTMOVE(bookReF) DO	
+			IF bookReF.author = 'Corets, Eva' THEN
+				
+				SET OutputRoot.XMLNSC.Root.Body.Data.{EName}.Book[i] = bookReF;
+				set	i =i+1;
+				
+			END IF;
+			MOVE bookReF NEXTSIBLING;
+		END WHILE;
+		
+		IF channelid ='TPH' THEN
+
+			PROPAGATE TO TERMINAL 'out';					
+
+		ELSEIF channelid= 'FCS' THEN
+
+			PROPAGATE TO TERMINAL 'out1';
+
+		END IF;
+	
+	END;
+END MODULE;
