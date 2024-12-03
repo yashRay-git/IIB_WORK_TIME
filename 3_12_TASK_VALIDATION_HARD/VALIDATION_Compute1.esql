@@ -19,6 +19,12 @@ CREATE COMPUTE MODULE VALIDATION_Compute1
 	END;
 
 	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		
+		DECLARE ref1 REFERENCE TO InputRoot.XMLNSC.Root.Header;
+		set OutputRoot.XMLNSC.Root.Header.requestId=ref1.requestId;
+		set OutputRoot.XMLNSC.Root.Header.channelId=ref1.channelId;
+		set OutputRoot.XMLNSC.Root.Header.requestTime=ref1.requestTime;
+		
 		DECLARE channelid CHARACTER fieldname(InputRoot.XMLNSC.Root.Header.channelId);
 		
 		DECLARE EName CHARACTER fieldname(InputRoot.XMLNSC.Root.Body.Data.[1]);
