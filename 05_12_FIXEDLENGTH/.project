@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>3_12_TASK_VALIDATION_HARD</name>
+	<name>05_12_FIXEDLENGTH</name>
 	<comment></comment>
 	<projects>
-		<project>3_12_TASK_VALIDATION_HARDJava</project>
-		<project>SUBFLOWS</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -109,6 +107,11 @@
 		</buildCommand>
 		<buildCommand>
 			<name>com.ibm.etools.mft.unittest.ui.TestCaseBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>com.ibm.dfdl.validation.dfdlBuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>

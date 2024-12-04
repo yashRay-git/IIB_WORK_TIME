@@ -5,7 +5,8 @@ CREATE COMPUTE MODULE VALIDATION_Compute1
 		-- CALL CopyMessageHeaders();
 		CALL CopyEntireMessage();
 		
-		RETURN TRUE;
+	--  set OutputRoot.XMLNSC.INFO ='INFORMATION HAS BEEN SENT TO THE ANOTHER DB';
+		RETURN FALSE;
 	END;
 
 	CREATE PROCEDURE CopyMessageHeaders() BEGIN
@@ -25,12 +26,48 @@ CREATE COMPUTE MODULE VALIDATION_Compute1
 		set OutputRoot.XMLNSC.Root.Header.channelId=ref1.channelId;
 		set OutputRoot.XMLNSC.Root.Header.requestTime=ref1.requestTime;
 		
-		DECLARE channelid CHARACTER fieldname(InputRoot.XMLNSC.Root.Header.channelId);
+		DECLARE channelid REFERENCE TO ref1.channelId;
 		
+--		DECLARE EName CHARACTER fieldname(InputRoot.XMLNSC.Root.Body.Data.[1]);
+--		DECLARE bookReF REFERENCE TO InputRoot.XMLNSC.Root.Body.Data.{EName}.book[1];
+--		
+		
+		
+		
+		IF FIELDNAME(InputRoot.XMLNSC.Root.Body.Data) IS NULL THEN			
+	    	--SET EName = 'Data';
+             
+            DECLARE EName CHARACTER fieldname(InputRoot.XMLNSC.Root.Body.[1]);
+		    DECLARE bookReF REFERENCE TO InputRoot.XMLNSC.Root.Body.{EName}.book[1];
+		    DECLARE i INTEGER 1;
+		
+		WHILE LASTMOVE(bookReF) DO	
+			IF bookReF.author = 'Corets, Eva' THEN
+				
+				SET OutputRoot.XMLNSC.Root.Body.{EName}.Book[i] = bookReF;
+				set	i =i+1;
+				
+			END IF;
+			MOVE bookReF NEXTSIBLING;
+		END WHILE; 
+		
+		IF channelid ='TPH' THEN
+
+			PROPAGATE TO TERMINAL 'out';					
+
+		ELSEIF channelid= 'FCS' THEN
+
+			PROPAGATE TO TERMINAL 'out1';
+
+		END IF;
+	
+             
+		ELSE
+			
 		DECLARE EName CHARACTER fieldname(InputRoot.XMLNSC.Root.Body.Data.[1]);
 		DECLARE bookReF REFERENCE TO InputRoot.XMLNSC.Root.Body.Data.{EName}.book[1];
 		
-		DECLARE i INTEGER 1;
+			DECLARE i INTEGER 1;
 		
 		WHILE LASTMOVE(bookReF) DO	
 			IF bookReF.author = 'Corets, Eva' THEN
@@ -51,6 +88,34 @@ CREATE COMPUTE MODULE VALIDATION_Compute1
 			PROPAGATE TO TERMINAL 'out1';
 
 		END IF;
+
+	END IF;
+		
+		
+		
+--		
+--		
+--		DECLARE i INTEGER 1;
+--		
+--		WHILE LASTMOVE(bookReF) DO	
+--			IF bookReF.author = 'Corets, Eva' THEN
+--				
+--				SET OutputRoot.XMLNSC.Root.Body.Data.{EName}.Book[i] = bookReF;
+--				set	i =i+1;
+--				
+--			END IF;
+--			MOVE bookReF NEXTSIBLING;
+--		END WHILE;
+--		
+--		IF channelid ='TPH' THEN
+--
+--			PROPAGATE TO TERMINAL 'out';					
+--
+--		ELSEIF channelid= 'FCS' THEN
+--
+--			PROPAGATE TO TERMINAL 'out1';
+--
+--		END IF;
 	
 	END;
 END MODULE;
