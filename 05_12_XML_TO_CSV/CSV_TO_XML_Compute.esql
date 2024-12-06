@@ -1,10 +1,10 @@
 
 
-CREATE COMPUTE MODULE FIX_TO_XML_Compute
+CREATE COMPUTE MODULE CSV_TO_XML_Compute
 	CREATE FUNCTION Main() RETURNS BOOLEAN
 	BEGIN
 		-- CALL CopyMessageHeaders();
-		CALL CopyEntireMessage();
+		 CALL CopyEntireMessage();
 		RETURN TRUE;
 	END;
 
@@ -19,19 +19,6 @@ CREATE COMPUTE MODULE FIX_TO_XML_Compute
 	END;
 
 	CREATE PROCEDURE CopyEntireMessage() BEGIN
-		
-		DECLARE ref REFERENCE TO InputRoot.DFDL.ifxlength.body[1];
-		DECLARE i INTEGER 1;
-		
-		while LASTMOVE(ref) do
-			
-			SET OutputRoot.XMLNSC.Root.body[i] = ref;
-			
-			set i=i+1;
-			
-			move ref NEXTSIBLING;
-		end while;
-	
-		-- SET OutputRoot.DFDL.ifxlength.body = InputRoot.DFDL.ifxlength.body;
+		SET OutputRoot.XMLNSC.Root.value = InputRoot.DFDL.csv_to_xml;
 	END;
 END MODULE;
